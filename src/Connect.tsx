@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
 import { Magic } from "magic-sdk";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Contract1155ABI } from "./ABI";
+import { BidModal } from "@reservoir0x/reservoir-kit-ui";
 
 const magic = new Magic("pk_live_1CA33C5CC97F6D00", {
   network: {
@@ -37,91 +38,46 @@ const Connect = () => {
       true
     );
 
-    const receipt = await txn.wait();
+    await txn.wait();
   }
 
   async function requestSignature() {
-    const signature = {
-      OrderComponents: {
-        Offerer: account,
-        Zone: "0x0000000000000000000000000000000000000000",
-        Offer: [
-          {
-            ItemType: 1,
-            Token: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-            IdentifierOrCriteria: 0,
-            StartAmount: 80000000000000000,
-            EndAmount: 80000000000000000,
-          },
-        ],
-        Consideration: [
-          {
-            ItemType: 5,
-            Token: "0x212C7ce69c9687860940f8fFDB6587B7ee702EBF",
-            IdentifierOrCriteria: 0,
-            StartAmount: 1,
-            EndAmount: 1,
-            Receipient: account,
-          },
-        ],
-        OrderType: 1,
-        StartTime: 1682675203,
-        EndTime: 1685267262,
-        ZoneHash:
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-        Salt: "16184194831101861726006543015570503459350911165487179483372145366118019611242",
-        ConduitKey:
-          "0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000",
-        Counter: 0,
-      },
-    };
-    const method = "eth_signTypedData_v4";
-    const signedMessage = await sign?.signMessage("test");
+    await sign?.signMessage("test");
   }
-  useEffect(() => {}, []);
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <button
-        style={{
-          background: "white",
-          padding: "1rem",
-          width: "10rem",
-          marginTop: "0.5rem",
-        }}
-        onClick={() => connect()}
-      >
-        Connect
-      </button>
-      <button
-        disabled={!account}
-        onClick={async () => {
-          await setApproval();
-          await requestSignature();
-        }}
-        style={{
-          background: "white",
-          padding: "1rem",
-          width: "10rem",
-          marginTop: "0.5rem",
-        }}
-      >
-        Set Approval
-      </button>
-      <div
-        style={{
-          marginTop: "2rem",
-        }}
-      >
-        Connected account: {account}
+    <div className="flex space-x-2">
+      <div className="flex flex-col justify-normal items-center border p-4 rounded">
+        <Button onClick={() => connect()}>Connect wallet</Button>
+        <button
+          disabled={!account}
+          onClick={async () => {
+            await setApproval();
+            await requestSignature();
+          }}
+          className="bg-white-500 p-2 mt-1 border border-black disabled:opacity-30 rounded cursor-not-allowed"
+        >
+          Set Approval
+        </button>
+        <div className="mt-2">Connected account: {account}</div>
       </div>
+      <div className="flex flex-col p-4 border rounded"></div>
     </div>
+  );
+};
+
+interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+  onClick: () => void;
+}
+
+const Button = ({ children, ...props }: ButtonProps) => {
+  return (
+    <button
+      className="bg-white-500 p-2 mt-1 border border-black disabled:opacity-30 rounded cursor-not-allowed"
+      {...props}
+    >
+      {children}
+    </button>
   );
 };
 
