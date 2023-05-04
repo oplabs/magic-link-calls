@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Magic } from "magic-sdk";
 import { ethers } from "ethers";
+import { Magic } from "magic-sdk";
+import { useEffect, useState } from "react";
 import { Contract1155ABI } from "./ABI";
 
 const magic = new Magic("pk_live_1CA33C5CC97F6D00", {
@@ -20,7 +20,9 @@ const Connect = () => {
   }
 
   async function setApproval() {
-    const provider = new ethers.BrowserProvider(magic.rpcProvider);
+    const provider = new ethers.providers.Web3Provider(
+      magic.rpcProvider as any
+    );
     const polygonSigner = await provider.getSigner();
     setSign(polygonSigner);
 
