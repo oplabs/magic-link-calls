@@ -41,10 +41,25 @@ export const ConnectWithWagmi = () => {
       <Button
         onClick={async () => {
           await setApproval?.();
+        }}
+      >
+        Set approval
+      </Button>
+      <Button
+        onClick={async () => {
           await signMessageAsync({ message: "test" });
         }}
       >
-        Set approval and sign message
+        Sign
+      </Button>
+      <Button
+        onClick={async () => {
+          await setApproval?.();
+          await new Promise((f) => setTimeout(f, 3000));
+          await signMessageAsync({ message: "test" });
+        }}
+      >
+        Set approval and sign
       </Button>
       {address && (
         <BidModal
